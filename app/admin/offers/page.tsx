@@ -1,0 +1,7 @@
+import Link from 'next/link';
+import { requireAdmin } from '@/lib/auth';
+import { db } from '@/lib/db';
+import { updateOffer } from '../../admin-actions';
+
+export const dynamic = 'force-dynamic';
+export default async function OffersPage() { await requireAdmin(); const offers = await db.offer.findMany({ orderBy: { createdAt: 'desc' }, include: { product: true, user: true } }); return <main className="admin-shell"><aside className="sidebar"><Link className="brand inverse" href="/">GOB<span>•</span></Link><p className="sidebar-label">OWNER CONSOLE</p><nav><Link href="/admin">Overview</Link><Link href="/admin/products">Products</Link><Link href="/admin/orders">Orders</Link><Link className="active" href="/admin/offers">Offers</Link></nav></aside><section className="admin-content"><p className="eyebrow">CUSTOMER OFFERS</p><h1>Make an Offer.</h1>{offers.length === 0 ? <div className="admin-panel"><h2>No offers</h2><p>Customer price proposals will appear here.</p></div> : offers.map((offer) => <article className="admin-panel" key={offer.id}><h2>{offer.product.name}</h2><p>{offer.user.email} offered ${offer.amount.toString()} · {offer.status}</p><form className="panel-actions" action={updateOffer.bind(null, offer.id)}><select name="status" defaultValue={offer.status}><option>PENDING</option><option>ACCEPTED</option><option>REJECTED</option><option>COUNTERED</option><option>EXPIRED</option></select><input name="message" placeholder="Optional response" /><button className="button small" type="submit">Save decision</button></form></article>)}</section></main>; }
