@@ -1,0 +1,7 @@
+import Link from 'next/link';
+import { requireAdmin } from '@/lib/auth';
+import { db } from '@/lib/db';
+import { updateSupportMessage } from '../../admin-actions';
+
+export const dynamic = 'force-dynamic';
+export default async function SupportPage() { await requireAdmin(); const messages = await db.supportMessage.findMany({ orderBy: { createdAt: 'desc' }, include: { user: true } }); return <main className="admin-shell"><aside className="sidebar"><Link className="brand inverse" href="/">GOB<span>•</span></Link><p className="sidebar-label">OWNER CONSOLE</p><nav><Link href="/admin">Overview</Link><Link href="/admin/orders">Orders</Link><Link className="active" href="/admin/support">Support</Link></nav></aside><section className="admin-content"><p className="eyebrow">CUSTOMER CARE</p><h1>Support inbox.</h1>{messages.length === 0 ? <div className="admin-panel"><h2>No messages</h2><p>Customer support messages will appear here.</p></div> : messages.map((message) => <article className="admin-panel" key={message.id}><h2>{message.subject}</h2><p>{message.user.email} · {message.status}</p><p>{message.body}</p><form className="panel-actions" action={updateSupportMessage.bind(null, message.id)}><select name="status" defaultValue={message.status}><option>OPEN</option><option>IN_PROGRESS</option><option>RESOLVED</option><option>CLOSED</option></select><button className="button small" type="submit">Update</button></form></article>)}</section></main>; }
