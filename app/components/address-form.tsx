@@ -1,0 +1,3 @@
+import { createAddress } from '../admin-actions';
+
+export default function AddressForm() { return <form className="auth-form" action={createAddress}><label>Label<input name="label" placeholder="Home" required /></label><label>Full name<input name="fullName" required /></label><label>Address line<input name="line1" required /></label><label>City<input name="city" required /></label><label>Country<input name="country" required /></label><label>Postal code<input name="postalCode" /></label><label>Phone<input name="phone" /></label><button className="button" type="submit">Save address</button></form>; }
