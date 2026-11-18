@@ -1,0 +1,2 @@
+export function calculateCartSubtotal(items: Array<{ unitPrice: number; quantity: number }>) { return items.reduce((total, item) => total + item.unitPrice * item.quantity, 0); }
+export function calculateDiscount(subtotal: number, discount: { type: 'PERCENTAGE' | 'FIXED'; value: number } | null) { if (!discount) return 0; return Math.min(subtotal, discount.type === 'PERCENTAGE' ? subtotal * (discount.value / 100) : discount.value); }
